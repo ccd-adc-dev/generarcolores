@@ -1,6 +1,7 @@
 const fs = require('fs')
+const open = require('open')
 
-
+const chalk = require('chalk');
 
 
 
@@ -14,7 +15,14 @@ function hexToRGB(hex) {
 }
   
 
+function componentToHex(c) {
+var hex = c.toString(16);
+return hex.length == 1 ? "0" + hex : hex;
+}
 
+function rgbToHex(c) {
+return "#" + componentToHex(c.r) + componentToHex(c.g) + componentToHex(c.b);
+}
 
 
 const generarPaleta = (colorInicial, colorFinal, numGrados) => {
@@ -66,9 +74,10 @@ const generarPaleta = (colorInicial, colorFinal, numGrados) => {
             nuevosColores.push({ ...nuevoColor })
         }
 
-        const coloresHex = nuevosColores.map(c=>`rgba(${c.r},${c.g},${c.b})`)
-        return coloresHex
+        // const coloresHex = nuevosColores.map(c=>`rgba(${c.r},${c.g},${c.b})`)
+        // return coloresHex
 
+        return nuevosColores
 
     } else {
         console.warn("Colores deben ser HEX")
@@ -97,11 +106,11 @@ const generarPaleta = (colorInicial, colorFinal, numGrados) => {
 const generarHtml = (colores) => {
 
     
-    const cajas = colores.map(c=>(
-        `<div style="background-color: ${c}; width: 100px; height: 100px; display: block;">
-        <h3>${c}</h3>
+    const cajas = colores.reduce((acc,c)=>acc+(
+        `<div style="background-color: ${rgbToHex(c)};">
+            <h3>${rgbToHex(c)}</h3>
         </div>`
-    ))
+    ),"")
         
         
     const html = `<!DOCTYPE html>
@@ -111,6 +120,27 @@ const generarHtml = (colores) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <title>Document</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                }
+                body {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+                div {
+                    width: ${ 100 / colores.length }vw;
+                    height: ${ 100 / colores.length }vw;
+                    display: flex;
+                    align-items:center;
+                    justify-content: center;
+                    font-size: .8rem;
+                    font-weight: 200;
+                    font-famil: Arial, sans-serif;
+                    color: #aaa;
+                }
+            </style>
             </head>
             <body>
             ${cajas}
@@ -124,4 +154,8 @@ const generarHtml = (colores) => {
 }
 
 
-fs.writeFileSync("./colores.html",generarHtml(generarPaleta('#0bc1ed','#5bf10d',7)))
+fs.writeFileSync("./colores.html",generarHtml(generarPaleta('#0bc1ed','#5bf10d',32)))
+
+generarPaleta('#0bc1ed','#5bf10d',12).forEach(c=>console.log(chalk.hex(rgbToHex(c))(rgbToHex(c))))
+
+open('colores.html')
