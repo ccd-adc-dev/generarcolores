@@ -55,13 +55,13 @@ const generarPaleta = (colorInicial, colorFinal, numGrados) => {
         let nuevosColores = []
 
         for( let i=0; i<numGrados; i++){
-            nuevoColor.r += Math.ceil(Math.abs(rangos.r / numGrados))
-            nuevoColor.g += Math.ceil(Math.abs(rangos.g / numGrados))
-            nuevoColor.b += Math.ceil(Math.abs(rangos.b / numGrados))
+            nuevoColor.r += Math.ceil(rangos.r / numGrados)
+            nuevoColor.g += Math.ceil(rangos.g / numGrados)
+            nuevoColor.b += Math.ceil(rangos.b / numGrados)
 
-            nuevoColor.r = Math.min(nuevoColor.r,255)
-            nuevoColor.g = Math.min(nuevoColor.g,255)
-            nuevoColor.b = Math.min(nuevoColor.b,255)
+            nuevoColor.r = Math.max(Math.min(nuevoColor.r,255),0)
+            nuevoColor.g = Math.max(Math.min(nuevoColor.g,255),0)
+            nuevoColor.b = Math.max(Math.min(nuevoColor.b,255),0)
 
             nuevosColores.push({ ...nuevoColor })
         }
@@ -87,14 +87,14 @@ const generarPaleta = (colorInicial, colorFinal, numGrados) => {
 
 
 
-const colores = generarPaleta("#f0a030","#f3faf9",10)
+// const colores = generarPaleta("#f0a030","#f3faf9",10)
 
 // console.log(
 //     hexToRGB('#fa0')
 
 // );
 
-const generarHtml = () => {
+const generarHtml = (colores) => {
 
     
     const cajas = colores.map(c=>(
@@ -124,4 +124,4 @@ const generarHtml = () => {
 }
 
 
-fs.writeFileSync("./colores.html",generarHtml(generarPaleta('#fa0','#0bc13d',10)))
+fs.writeFileSync("./colores.html",generarHtml(generarPaleta('#0bc1ed','#5bf10d',7)))
